@@ -1,10 +1,29 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, SectionList } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  SectionList,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import colors from "../../res/color";
+import Http from "../../libs/http";
+import CoinMarketItem from "../coinDetail/CoinMarketItem";
 
 const CoinDetailScreen = ({ route, navigation }) => {
+  const [markets, setMarkets] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { coin } = route.params;
   navigation.setOptions({ title: coin.symbol });
+
+  const getMarkets = async () => {
+    const url = `https://api.coinlore.net/api/coin/markets/?id=${coin.id}`;
+    const marketsList = await Http.instance.get(url);
+    setMarkets(marketsList);
+    setLoading(false);
+  };
 
   const getSymbolIcon = (name) => {
     if (name) {
@@ -32,6 +51,19 @@ const CoinDetailScreen = ({ route, navigation }) => {
 
     return sections;
   };
+
+  //Items to list
+
+  const item = ({ item }) => (
+    <View style={styles.sectionItem}>
+      <Text style={styles.sectionText}>{item}</Text>
+    </View>
+  );
+
+  useEffect(() => {
+    getMarkets();
+  });
+
   return (
     <View style={styles.container}>
       <View style={styles.subHeader}>
@@ -41,12 +73,28 @@ const CoinDetailScreen = ({ route, navigation }) => {
         />
         <Text style={styles.title}>{coin.name}</Text>
       </View>
-      <SectionList
-        sections={getSections(coin)}
-        renderItem={({ item }) => <Text>{item}</Text>}
-        renderSectionHeader={({ section }) => <Text>{section.title}</Text>}
-        keyExtractor={(item) => item}
-      />
+      <View>
+        <SectionList
+          sections={getSections(coin)}
+          renderItem={item}
+          renderSectionHeader={({ section }) => (
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionText}>{section.title}</Text>
+            </View>
+          )}
+          keyExtractor={(item) => item}
+        />
+      </View>
+
+      <View style={styles.containerMarkets}>
+        <Text style={styles.marketsTittle}>Markets</Text>
+        {loading && <ActivityIndicator color="#fff4" />}
+        <FlatList
+          horizontal={true}
+          data={markets}
+          renderItem={({ item }) => <CoinMarketItem item={item} />}
+        />
+      </View>
     </View>
   );
 };
@@ -57,7 +105,7 @@ const styles = StyleSheet.create({
     height: 25,
   },
   subHeader: {
-    backgroundColor: "rgba(0,0,0,0.1)",
+    backgroundColor: `rgba(0,0,0,0.1)`,
     padding: 16,
     flexDirection: "row",
   },
@@ -65,6 +113,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.charade,
+  },
+  section: {
+    maxHeight: 220,
+  },
+  sectionHeader: {
+    backgroundColor: "rgba(0,0,0,0.2)",
+  },
+  sectionItem: {
+    padding: 8,
+  },
+  itemText: {
+    color: "#fff",
+    fontSize: 14,
+  },
+  sectionText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  containerMarkets: {
+    alignItems: "center",
+  },
+  marketsTittle: {
+    color: "#fff",
+    marginBottom: 10,
+    fontWeight: "bold",
   },
 });
 

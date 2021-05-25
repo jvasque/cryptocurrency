@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, ActivityIndicator, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import tailwind from "tailwind-rn";
 import Http from "../../libs/http";
@@ -27,9 +27,9 @@ const CoinsScreen = () => {
     navigation.navigate("Coins Details", { coin });
   };
 
-  const list = ({ item }) => (
-    <CoinsItem item={item} handlePress={() => handlePress(item)} />
-  );
+  const list = ({item}) => {    
+    return <CoinsItem item={item} handlePress={() => handlePress(item)} />
+};
 
   return (
     <View
@@ -37,11 +37,18 @@ const CoinsScreen = () => {
         (tailwind("flex items-center"), { backgroundColor: Colors.charade })
       }
     >
-      <Text>Hola soy coinsScreens</Text>
+      <Text style={styles.Color}>Hola soy coinsScreens</Text>
       {loading && <ActivityIndicator color="#fff4" />}
       <FlatList data={dat} keyExtractor={(item) => item.id} renderItem={list} />
     </View>
   );
 };
+
+
+const styles = StyleSheet.create({
+  Color:{
+    color:"#fff"
+  }
+})
 
 export default CoinsScreen;

@@ -7,6 +7,7 @@ import {
   Text,
   StyleSheet,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import Colors from "../../res/color";
 
 const CoinsItem = ({ item, handlePress }) => {
@@ -16,6 +17,8 @@ const CoinsItem = ({ item, handlePress }) => {
     }
     return require("../../assets/arrow_down.png");
   };
+
+  
 
   return (
     <Pressable onPress={handlePress} style={(styles.row, styles.container)}>

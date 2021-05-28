@@ -11,10 +11,14 @@ import {
 import colors from "../../res/color";
 import Http from "../../libs/http";
 import CoinMarketItem from "../coinDetail/CoinMarketItem";
+import { useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 
-const CoinDetailScreen = ({ route, navigation }) => {
+const CoinDetailScreen = () => {
+  const route = useRoute();
   const [markets, setMarkets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
   const { coin } = route.params;
   navigation.setOptions({ title: coin.symbol });
 

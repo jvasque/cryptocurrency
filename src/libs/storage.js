@@ -1,11 +1,17 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {db} from './config'
 
-export default class Storage {
+
+export default class Storage{
   static instance = new Storage();
 
   store = async (key, value) => {
+
+    const obj = {
+      [key]:value
+    }
+
     try {
-      await AsyncStorage(key, value);
+      await db.collection('currencies').add(obj)
       return true;
     } catch (error) {
       console.log("storage error ", error);

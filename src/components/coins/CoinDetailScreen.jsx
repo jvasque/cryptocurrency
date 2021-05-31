@@ -8,6 +8,7 @@ import {
   FlatList,
   ActivityIndicator,
   Pressable,
+  Alert,
 } from "react-native";
 import colors from "../../res/color";
 import Http from "../../libs/http";
@@ -72,8 +73,16 @@ const CoinDetailScreen = () => {
   };
 
   const removeFavoriteCoin = async () => {
-    await await coins.doc(coin.name).delete()
-      .then(setIsFavorite(false));
+    Alert.alert("Remove favorite", "Are you sure?", [
+      { text: "cancel", onPress: () => {}, style: "cancel" },
+      {
+        text: "Remove",
+        onPress: async () => {
+          await  coins.doc(coin.name).delete().then(setIsFavorite(false));
+        },
+        style: "destructive",
+      },
+    ]);
   };
 
   const toggleFavorite = () => {
@@ -92,7 +101,6 @@ const CoinDetailScreen = () => {
     }
 
     a.forEach((doc) => {
-      
       setIsFavorite(true);
       //console.log(doc.id ," => ", doc.data())
     });
